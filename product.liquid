@@ -435,7 +435,7 @@
 
   const accordionContainer = pdpRoot.querySelector('.product-details-accordion');
   if (accordionContainer) {
-    const allowMultiple = false;
+    const allowMultiple = true;
     const accordions = accordionContainer.querySelectorAll('.accordion');
 
     const openAcc = (acc) => {
@@ -488,10 +488,14 @@
         }
       });
 
-      header.setAttribute('aria-expanded', 'false');
-      panel.style.maxHeight = '0px';
-      acc.classList.remove('open');
-      if (icon) icon.textContent = '+';
+      if (acc.classList.contains('open')) {
+        openAcc(acc);
+      } else {
+        header.setAttribute('aria-expanded', 'false');
+        panel.style.maxHeight = '0px';
+        acc.classList.remove('open');
+        if (icon) icon.textContent = '+';
+      }
     });
 
     window.addEventListener('resize', () => {
@@ -499,5 +503,12 @@
         panel.style.maxHeight = panel.scrollHeight + 'px';
       });
     });
+
+    const firstAccordion = accordions[0];
+    if (firstAccordion && !firstAccordion.classList.contains('open')) {
+      requestAnimationFrame(() => {
+        openAcc(firstAccordion);
+      });
+    }
   }
 </script>
