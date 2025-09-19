@@ -191,8 +191,9 @@
   .pdp-scope body { font-family: 'Inter', sans-serif; }
   .pdp-scope .product-wrapper {
     display: flex; gap: 2rem; max-width: 1400px; margin: 0 auto; padding: 2rem 3rem;
+    align-items: flex-start;
   }
-  .pdp-scope .product-image { flex: 0 0 50%; display: flex; gap: 1rem; position: relative; }
+  .pdp-scope .product-image { flex: 0 0 50%; display: flex; gap: 1rem; position: relative; align-items: flex-start; }
   .pdp-scope .product-thumbnails { display: flex; flex-direction: column; gap: 0.4rem; width: 20%; max-width: 60px; }
   .pdp-scope .thumbnail { aspect-ratio: 3/4; width: 100%; object-fit: cover; border: none; border-radius: 0; cursor: pointer; box-sizing: border-box; transition: outline 0.2s; }
   .pdp-scope .thumbnail.active { outline: 1px solid #000; outline-offset: 2px; }
@@ -221,7 +222,8 @@
   .pdp-scope .qty-btn:active { border-color: #000; }
   .pdp-scope .qty-display { min-width: 18px; text-align: center; font-family: 'Inter', sans-serif; font-size: 0.98rem; user-select: none; padding: 0 2px; }
 
-  .pdp-scope .product-details-accordion { margin-top: 2rem; }
+  .pdp-scope .product-image img { height: auto; }
+  .pdp-scope .product-details-accordion { margin-top: 1.5rem; }
   .pdp-scope .accordion-section {
     margin-top: 1.5rem;
     padding-top: 0.5rem;
@@ -251,6 +253,19 @@
   .pdp-scope .accordion-body { overflow: hidden; max-height: 0; transition: max-height 0.35s ease; will-change: max-height; }
   .pdp-scope .accordion-content { padding: 0 0 1rem; font-size: 0.85rem; line-height: 1.6; color: #444; }
   .pdp-scope .accordion-content ul { margin: 0.5rem 0 0 1.25rem; }
+
+  .pdp-scope .product-wrapper,
+  .pdp-scope .product-image,
+  .pdp-scope .product-form { overflow: visible; }
+
+  @media (min-width: 1024px) {
+    .pdp-scope .product-form {
+      position: sticky;
+      top: 88px;
+      align-self: flex-start;
+      z-index: 1;
+    }
+  }
 
   @media (max-width: 768px) {
     .pdp-scope .product-wrapper { flex-direction: column; padding: 1rem; }
