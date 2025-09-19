@@ -82,6 +82,101 @@
           <div ref="liveRegion" class="visually-hidden" aria-live="polite"></div>
         </form>
       </product-form-component>
+
+      <div class="product-details-accordion">
+        <section class="accordion-section" aria-label="Product details">
+          <div class="accordion">
+            <button
+              class="accordion-header"
+              type="button"
+              aria-expanded="false"
+              aria-controls="acc-panel-1"
+              id="acc-trigger-1"
+            >
+              <span>Shipping</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-body" id="acc-panel-1" role="region" aria-labelledby="acc-trigger-1">
+              <div class="accordion-content">
+                <p>For orders placed before 7am AEDT, we endeavour to process the same business day. Orders placed after 11am AEDT will be processed the next business day.</p>
+                <p>During sale events and new collection launches, there may be a slightly longer processing time.</p>
+                <p>All orders are hand-picked and packed with care.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion">
+            <button
+              class="accordion-header"
+              type="button"
+              aria-expanded="false"
+              aria-controls="acc-panel-2"
+              id="acc-trigger-2"
+            >
+              <span>Returns</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-body" id="acc-panel-2" role="region" aria-labelledby="acc-trigger-2">
+              <div class="accordion-content">
+                <p>You can choose between a refund or a credit note on full-priced items.</p>
+                <ul>
+                  <li>Item(s) must be returned in original condition and packaging.</li>
+                  <li>Earrings cannot be returned for health reasons.</li>
+                  <li>Return shipping is the customer’s responsibility.</li>
+                  <li>Sale items are not refundable for change of mind.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion">
+            <button
+              class="accordion-header"
+              type="button"
+              aria-expanded="false"
+              aria-controls="acc-panel-3"
+              id="acc-trigger-3"
+            >
+              <span>Fabric &amp; Care</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-body" id="acc-panel-3" role="region" aria-labelledby="acc-trigger-3">
+              <div class="accordion-content">
+                <p>Composition: 98% Cotton, 2% Elastane. Soft hand-feel with light stretch.</p>
+                <ul>
+                  <li>Machine wash cold, gentle cycle</li>
+                  <li>Wash with like colors</li>
+                  <li>Do not bleach</li>
+                  <li>Line dry; cool iron on reverse if needed</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion">
+            <button
+              class="accordion-header"
+              type="button"
+              aria-expanded="false"
+              aria-controls="acc-panel-4"
+              id="acc-trigger-4"
+            >
+              <span>Size &amp; Fit</span>
+              <span class="accordion-icon">+</span>
+            </button>
+            <div class="accordion-body" id="acc-panel-4" role="region" aria-labelledby="acc-trigger-4">
+              <div class="accordion-content">
+                <p>Fits true to size. Peplum hem hits at the high hip; square neckline.</p>
+                <ul>
+                  <li>Model is 174cm / 5'8" and wears size S</li>
+                  <li>Body length (S): 54cm; Chest (S): 86cm</li>
+                  <li>Refer to the size guide for exact measurements</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   </div>
 </section>
@@ -125,6 +220,37 @@
   .pdp-scope .qty-btn { width: 38px; height: 30px; border: 1px solid #ccc; background: #fff; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 1.05rem; line-height: 1; padding: 0; transition: border-color 0.17s; border-radius: 0; display: flex; align-items: center; justify-content: center; }
   .pdp-scope .qty-btn:active { border-color: #000; }
   .pdp-scope .qty-display { min-width: 18px; text-align: center; font-family: 'Inter', sans-serif; font-size: 0.98rem; user-select: none; padding: 0 2px; }
+
+  .pdp-scope .product-details-accordion { margin-top: 2rem; }
+  .pdp-scope .accordion-section {
+    margin-top: 1.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #e3e3e3;
+    color: #111;
+    font-family: 'Inter', sans-serif;
+  }
+  .pdp-scope .accordion { border-bottom: 1px solid #e3e3e3; }
+  .pdp-scope .accordion-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: inherit;
+  }
+  .pdp-scope .accordion-header:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+  .pdp-scope .accordion-icon { font-size: 1rem; line-height: 1; transition: transform 0.3s ease; }
+  .pdp-scope .accordion-body { overflow: hidden; max-height: 0; transition: max-height 0.35s ease; will-change: max-height; }
+  .pdp-scope .accordion-content { padding: 0 0 1rem; font-size: 0.85rem; line-height: 1.6; color: #444; }
+  .pdp-scope .accordion-content ul { margin: 0.5rem 0 0 1.25rem; }
 
   @media (max-width: 768px) {
     .pdp-scope .product-wrapper { flex-direction: column; padding: 1rem; }
@@ -286,6 +412,74 @@
           lastIndex = activeIndex;
         }
       }, 100);
+    });
+  }
+
+  const accordionContainer = pdpRoot.querySelector('.product-details-accordion');
+  if (accordionContainer) {
+    const allowMultiple = false;
+    const accordions = accordionContainer.querySelectorAll('.accordion');
+
+    const openAcc = (acc) => {
+      const header = acc.querySelector('.accordion-header');
+      const panel = acc.querySelector('.accordion-body');
+      const icon = acc.querySelector('.accordion-icon');
+      if (!panel || !header) return;
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+      header.setAttribute('aria-expanded', 'true');
+      acc.classList.add('open');
+      if (icon) icon.textContent = '−';
+    };
+
+    const closeAcc = (acc) => {
+      const header = acc.querySelector('.accordion-header');
+      const panel = acc.querySelector('.accordion-body');
+      const icon = acc.querySelector('.accordion-icon');
+      if (!panel || !header) return;
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+      void panel.offsetHeight;
+      panel.style.maxHeight = '0px';
+      header.setAttribute('aria-expanded', 'false');
+      acc.classList.remove('open');
+      if (icon) icon.textContent = '+';
+    };
+
+    const toggleAcc = (targetAcc) => {
+      const isOpen = targetAcc.classList.contains('open');
+      if (!allowMultiple) {
+        accordions.forEach((acc) => {
+          if (acc !== targetAcc) {
+            closeAcc(acc);
+          }
+        });
+      }
+      isOpen ? closeAcc(targetAcc) : openAcc(targetAcc);
+    };
+
+    accordions.forEach((acc) => {
+      const header = acc.querySelector('.accordion-header');
+      const panel = acc.querySelector('.accordion-body');
+      const icon = acc.querySelector('.accordion-icon');
+      if (!header || !panel) return;
+
+      header.addEventListener('click', () => toggleAcc(acc));
+      header.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          toggleAcc(acc);
+        }
+      });
+
+      header.setAttribute('aria-expanded', 'false');
+      panel.style.maxHeight = '0px';
+      acc.classList.remove('open');
+      if (icon) icon.textContent = '+';
+    });
+
+    window.addEventListener('resize', () => {
+      accordionContainer.querySelectorAll('.accordion.open .accordion-body').forEach((panel) => {
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+      });
     });
   }
 </script>
