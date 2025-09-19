@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Accordion with Plus/Minus</title>
+  <style>
+    :root {
+      --border:#ddd;
+      --text:#111;
+      --muted:#444;
+      --transition: 300ms ease;
+    }
+
+    /* ===== Accordion ===== */
+    .accordion-section {
+      max-width: 780px;
+      margin: 40px auto;
+      padding: 0 20px;
+      border-top: 1px solid var(--border);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+    }
+    .accordion { border-bottom: 1px solid var(--border); }
+
+    .accordion-header {
+      width: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0; background: transparent; border: 0; cursor: pointer; text-align: left;
+      text-transform: uppercase; letter-spacing: 1px; font-size: 12px;
+    }
+    .accordion-header:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+
+    .accordion-icon { font-size: 16px; line-height: 1; transition: transform var(--transition); }
+
+    .accordion-body {
+      overflow: hidden; max-height: 0; transition: max-height 0.4s ease; will-change: max-height;
+    }
+    .accordion-content {
+      padding: 0 0 14px 0; font-size: 14px; line-height: 1.6; color: var(--muted);
+    }
+    .accordion-content ul { margin: 8px 0 0 20px; }
+  </style>
+</head>
+<body>
+
+  <section class="accordion-section" aria-label="Product details">
+    <!-- 1. Shipping -->
+    <div class="accordion">
+      <button class="accordion-header" type="button"
+              aria-expanded="false" aria-controls="acc-panel-1" id="acc-trigger-1">
+        <span>Shipping</span>
+        <span class="accordion-icon">+</span>
+      </button>
+      <div class="accordion-body" id="acc-panel-1" role="region" aria-labelledby="acc-trigger-1">
+        <div class="accordion-content">
+          <p>For orders placed before 7am AEDT, we endeavour to process the same business day. Orders placed after 11am AEDT will be processed the next business day.</p>
+          <p>During sale events and new collection launches, there may be a slightly longer processing time.</p>
+          <p>All orders are hand-picked and packed with care.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Returns -->
+    <div class="accordion">
+      <button class="accordion-header" type="button"
+              aria-expanded="false" aria-controls="acc-panel-2" id="acc-trigger-2">
+        <span>Returns</span>
+        <span class="accordion-icon">+</span>
+      </button>
+      <div class="accordion-body" id="acc-panel-2" role="region" aria-labelledby="acc-trigger-2">
+        <div class="accordion-content">
+          <p>You can choose between a refund or a credit note on full-priced items.</p>
+          <ul>
+            <li>Item(s) must be returned in original condition and packaging.</li>
+            <li>Earrings cannot be returned for health reasons.</li>
+            <li>Return shipping is the customer’s responsibility.</li>
+            <li>Sale items are not refundable for change of mind.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Fabric & Care (NEW) -->
+    <div class="accordion">
+      <button class="accordion-header" type="button"
+              aria-expanded="false" aria-controls="acc-panel-3" id="acc-trigger-3">
+        <span>Fabric &amp; Care</span>
+        <span class="accordion-icon">+</span>
+      </button>
+      <div class="accordion-body" id="acc-panel-3" role="region" aria-labelledby="acc-trigger-3">
+        <div class="accordion-content">
+          <p>Composition: 98% Cotton, 2% Elastane. Soft hand-feel with light stretch.</p>
+          <ul>
+            <li>Machine wash cold, gentle cycle</li>
+            <li>Wash with like colors</li>
+            <li>Do not bleach</li>
+            <li>Line dry; cool iron on reverse if needed</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Size & Fit (NEW) -->
+    <div class="accordion">
+      <button class="accordion-header" type="button"
+              aria-expanded="false" aria-controls="acc-panel-4" id="acc-trigger-4">
+        <span>Size &amp; Fit</span>
+        <span class="accordion-icon">+</span>
+      </button>
+      <div class="accordion-body" id="acc-panel-4" role="region" aria-labelledby="acc-trigger-4">
+        <div class="accordion-content">
+          <p>Fits true to size. Peplum hem hits at the high hip; square neckline.</p>
+          <ul>
+            <li>Model is 174cm / 5'8" and wears size S</li>
+            <li>Body length (S): 54cm; Chest (S): 86cm</li>
+            <li>Refer to the size guide for exact measurements</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Keep single-open behavior to maintain integrity; set true for multi-open.
+    const allowMultiple = false;
+
+    const accordions = document.querySelectorAll('.accordion');
+    accordions.forEach(acc => {
+      const header = acc.querySelector('.accordion-header');
+      const panel  = acc.querySelector('.accordion-body');
+      const icon   = acc.querySelector('.accordion-icon');
+
+      header.addEventListener('click', () => toggle(acc));
+      header.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(acc); }
+      });
+
+      header.setAttribute('aria-expanded', 'false');
+      panel.style.maxHeight = '0px';
+      icon.textContent = '+';
+    });
+
+    function toggle(targetAcc) {
+      const isOpen = targetAcc.classList.contains('open');
+      if (!allowMultiple) {
+        document.querySelectorAll('.accordion.open').forEach(openAcc => {
+          if (openAcc !== targetAcc) closeAcc(openAcc);
+        });
+      }
+      isOpen ? closeAcc(targetAcc) : openAcc(targetAcc);
+    }
+
+    function openAcc(acc) {
+      const h = acc.querySelector('.accordion-header');
+      const p = acc.querySelector('.accordion-body');
+      const i = acc.querySelector('.accordion-icon');
+      p.style.maxHeight = p.scrollHeight + 'px';
+      h.setAttribute('aria-expanded', 'true');
+      acc.classList.add('open');
+      i.textContent = '−';
+    }
+
+    function closeAcc(acc) {
+      const h = acc.querySelector('.accordion-header');
+      const p = acc.querySelector('.accordion-body');
+      const i = acc.querySelector('.accordion-icon');
+      p.style.maxHeight = p.scrollHeight + 'px';
+      void p.offsetHeight; // reflow
+      p.style.maxHeight = '0px';
+      h.setAttribute('aria-expanded', 'false');
+      acc.classList.remove('open');
+      i.textContent = '+';
+    }
+
+    // Keep heights accurate on resize
+    window.addEventListener('resize', () => {
+      document.querySelectorAll('.accordion.open .accordion-body').forEach(p => {
+        p.style.maxHeight = p.scrollHeight + 'px';
+      });
+    });
+  </script>
+</body>
+</html>
