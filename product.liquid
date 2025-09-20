@@ -1,6 +1,6 @@
 <!-- ====== HEAD (fonts + theme globals) ====== -->
 <link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
 
 <!-- Theme globals required by product-form.js -->
 <script>
@@ -187,6 +187,17 @@
       <!-- /Accordion -->
     </div>
   </div>
+
+  <!-- PDP Lightbox -->
+  <div class="pdp-lightbox" id="pdpLightbox" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="pdp-lb-controls">
+      <button class="pdp-lb-btn" id="pdpZoomToggle" type="button" aria-label="Toggle Zoom">+</button>
+      <button class="pdp-lb-btn" id="pdpCloseBtn" type="button" aria-label="Close">×</button>
+    </div>
+    <div class="pdp-lb-stage" id="pdpStage">
+      <img id="pdpZoomedImage" alt="Zoomed Product"/>
+    </div>
+  </div>
 </section>
 
 <style>
@@ -226,20 +237,20 @@
   .pdp-scope .sp-list{list-style:none;margin:0;padding:0}
   .pdp-scope .sp-list li{
     display:grid;
-    grid-template-columns:20px 1fr;
+    grid-template-columns:1.2em 1fr;
     align-items:center;
     column-gap:12px;
     color:#555;
-    font-size:15px;
-    line-height:22px;
-    margin:8px 0;
+    font-size:.9rem;
+    line-height:1.4;
+    margin:0;
   }
-  .pdp-scope .sp-icon{width:18px;height:18px;display:inline-grid;place-items:center;color:inherit}
-  .pdp-scope .sp-icon svg{width:18px;height:18px;display:block}
+  .pdp-scope .sp-icon{width:.95em;height:.95em;display:inline-grid;place-items:center;color:inherit}
+  .pdp-scope .sp-icon svg{width:.95em;height:.95em;display:block}
 
   /* Green dot with subtle pulse */
   .pdp-scope .sp-icon.dot{
-    position:relative;width:14px;height:14px;border-radius:50%;
+    position:relative;width:.8em;height:.8em;border-radius:50%;
     background:#79C48B;
   }
   .pdp-scope .sp-icon.dot::after{
@@ -302,7 +313,7 @@
   .pdp-scope .accordion-header:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
   .pdp-scope .accordion-icon { font-size: 0.85rem; transition: transform 0.3s ease; }
   .pdp-scope .accordion-body { overflow: hidden; max-height: 0; transition: max-height 0.35s ease; will-change: max-height; }
-  .pdp-scope .accordion-content { padding: 0 0 1rem; font-size: 0.85rem; line-height: 1.6; color: #444; }
+  .pdp-scope .accordion-content { padding: 0 0 1rem; font-size: 0.9rem; line-height: 1.4; color: #555; }
   .pdp-scope .accordion-content ul { margin: 0.5rem 0 0 1.25rem; }
 
   @media (min-width: 1024px) {
@@ -323,6 +334,17 @@
       scroll-snap-align: start; border: none; display: block; background: #fafafa;
     }
   }
+
+  /* ===== Lightbox (scoped) ===== */
+  .pdp-scope .pdp-lightbox { position: fixed; inset: 0; background: #fff; display: none; justify-content: center; align-items: center; z-index: 9999; }
+  .pdp-scope .pdp-lightbox.open { display: flex; }
+  .pdp-scope .pdp-lb-stage { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; touch-action: none; overflow: hidden; }
+  .pdp-scope #pdpZoomedImage { max-width: 80vw; max-height: 80vh; cursor: grab; user-select: none; -webkit-user-drag: none; will-change: transform; transition: transform .12s ease; transform-origin: 50% 50%; }
+  .pdp-scope .pdp-lightbox.dragging #pdpZoomedImage { cursor: grabbing; transition: none; }
+  .pdp-scope .pdp-lb-controls { position: absolute; top: 14px; right: 14px; display: flex; gap: 12px; z-index: 2; }
+  .pdp-scope .pdp-lb-btn { width: 32px; height: 32px; background: #000; color: #fff; display: flex; justify-content: center; align-items: center; font-size: 16px; font-weight: 700; cursor: pointer; border: none; border-radius: 0; user-select: none; transition: background .2s ease, transform .1s ease; }
+  .pdp-scope .pdp-lb-btn:hover { background: #222; }
+  .pdp-scope .pdp-lb-btn:active { transform: scale(.95); }
 </style>
 
 <script type="module">
@@ -543,4 +565,205 @@
     const firstAccordion = accordions[0];
     if (firstAccordion) openAcc(firstAccordion);
   }
+
+  // ===== Lightbox integration (scoped) =====
+  const lbEls = {
+    lightbox: pdpRoot.querySelector('#pdpLightbox'),
+    stage: pdpRoot.querySelector('#pdpStage'),
+    img: pdpRoot.querySelector('#pdpZoomedImage'),
+    toggle: pdpRoot.querySelector('#pdpZoomToggle'),
+    close: pdpRoot.querySelector('#pdpCloseBtn'),
+  };
+  const stateLB = { scale: 1, min: 1, max: 4, tx: 0, ty: 0, baseW: 0, baseH: 0, viewW: 0, viewH: 0 };
+  const pts = new Map();
+  let pinchStart = null;
+  let rafId = null;
+
+  const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
+  const applyLB = () => {
+    lbEls.img.style.transform = `translate3d(${stateLB.tx}px,${stateLB.ty}px,0) scale(${stateLB.scale})`;
+    lbEls.toggle.textContent = (stateLB.scale > 1.01 || Math.abs(stateLB.tx) > 1 || Math.abs(stateLB.ty) > 1) ? '−' : '+';
+  };
+  const clampPan = () => {
+    const contentW = stateLB.baseW * stateLB.scale;
+    const contentH = stateLB.baseH * stateLB.scale;
+    const maxX = Math.max(0, (contentW - stateLB.viewW) / 2);
+    const maxY = Math.max(0, (contentH - stateLB.viewH) / 2);
+    stateLB.tx = clamp(stateLB.tx, -maxX, maxX);
+    stateLB.ty = clamp(stateLB.ty, -maxY, maxY);
+  };
+  const schedule = () => {
+    if (!rafId) {
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        clampPan();
+        applyLB();
+      });
+    }
+  };
+  const measureBase = () => {
+    const prev = lbEls.img.style.transform;
+    lbEls.img.style.transform = 'translate3d(0,0,0) scale(1)';
+    const r = lbEls.img.getBoundingClientRect();
+    const s = lbEls.stage.getBoundingClientRect();
+    stateLB.baseW = r.width;
+    stateLB.baseH = r.height;
+    stateLB.viewW = s.width;
+    stateLB.viewH = s.height;
+    lbEls.img.style.transform = prev;
+  };
+  const zoomAt = (cx, cy, next) => {
+    next = clamp(next, stateLB.min, stateLB.max);
+    const prev = stateLB.scale;
+    if (next === prev) return;
+    stateLB.tx = cx - (cx - stateLB.tx) * (next / prev);
+    stateLB.ty = cy - (cy - stateLB.ty) * (next / prev);
+    stateLB.scale = next;
+    schedule();
+  };
+  const resetView = () => {
+    stateLB.scale = 1;
+    stateLB.tx = 0;
+    stateLB.ty = 0;
+    schedule();
+  };
+
+  const openLB = (src) => {
+    const finalizeOpen = () => {
+      lbEls.lightbox.classList.add('open');
+      lbEls.lightbox.setAttribute('aria-hidden', 'false');
+      document.body.dataset.prevOverflow = document.body.style.overflow || '';
+      document.body.style.overflow = 'hidden';
+      measureBase();
+      resetView();
+    };
+
+    const needsLoad = lbEls.img.src !== src || !lbEls.img.complete || !lbEls.img.naturalWidth;
+    if (needsLoad) {
+      lbEls.img.onload = () => {
+        lbEls.img.onload = null;
+        finalizeOpen();
+      };
+      if (lbEls.img.src !== src) {
+        lbEls.img.src = src;
+      }
+      if (lbEls.img.complete && lbEls.img.naturalWidth) {
+        lbEls.img.onload = null;
+        finalizeOpen();
+      }
+    } else {
+      finalizeOpen();
+    }
+  };
+  const closeLB = () => {
+    lbEls.lightbox.classList.remove('open');
+    lbEls.lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = document.body.dataset.prevOverflow || '';
+    pts.clear();
+    pinchStart = null;
+    lbEls.lightbox.classList.remove('dragging');
+  };
+
+  lbEls.toggle.addEventListener('click', () => {
+    if (stateLB.scale > 1.01 || Math.abs(stateLB.tx) > 1 || Math.abs(stateLB.ty) > 1) {
+      resetView();
+    } else {
+      zoomAt(0, 0, 2);
+    }
+  });
+  lbEls.close.addEventListener('click', closeLB);
+  lbEls.lightbox.addEventListener('click', (e) => {
+    if (e.target === lbEls.lightbox) closeLB();
+  });
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lbEls.lightbox.classList.contains('open')) closeLB();
+  });
+
+  lbEls.stage.addEventListener('pointerdown', (e) => {
+    if (!lbEls.lightbox.classList.contains('open')) return;
+    lbEls.stage.setPointerCapture(e.pointerId);
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pts.size === 2) {
+      const [a, b] = [...pts.values()];
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const dist = Math.hypot(dx, dy);
+      const rect = lbEls.stage.getBoundingClientRect();
+      const cx = ((a.x + b.x) / 2) - (rect.left + rect.width / 2);
+      const cy = ((a.y + b.y) / 2) - (rect.top + rect.height / 2);
+      pinchStart = { dist, scale: stateLB.scale, cx, cy };
+    }
+    lbEls.lightbox.classList.add('dragging');
+  });
+  lbEls.stage.addEventListener('pointermove', (e) => {
+    if (!pts.has(e.pointerId)) return;
+    const prev = pts.get(e.pointerId);
+    const now = { x: e.clientX, y: e.clientY };
+    pts.set(e.pointerId, now);
+    if (pts.size === 1) {
+      stateLB.tx += now.x - prev.x;
+      stateLB.ty += now.y - prev.y;
+      schedule();
+    } else if (pts.size === 2 && pinchStart) {
+      const [a, b] = [...pts.values()];
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const dist = Math.hypot(dx, dy);
+      const next = clamp(pinchStart.scale * (dist / pinchStart.dist), stateLB.min, stateLB.max);
+      zoomAt(pinchStart.cx, pinchStart.cy, next);
+    }
+  }, { passive: false });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach((type) => {
+    lbEls.stage.addEventListener(type, (e) => {
+      if (!pts.has(e.pointerId)) return;
+      pts.delete(e.pointerId);
+      if (pts.size < 2) pinchStart = null;
+      if (pts.size === 0) lbEls.lightbox.classList.remove('dragging');
+    });
+  });
+  lbEls.stage.addEventListener('wheel', (e) => {
+    if (!lbEls.lightbox.classList.contains('open')) return;
+    e.preventDefault();
+    const factor = Math.exp(-e.deltaY * 0.0015);
+    const rect = lbEls.stage.getBoundingClientRect();
+    const cx = e.clientX - (rect.left + rect.width / 2);
+    const cy = e.clientY - (rect.top + rect.height / 2);
+    zoomAt(cx, cy, stateLB.scale * factor);
+  }, { passive: false });
+  new ResizeObserver(() => {
+    if (lbEls.lightbox.classList.contains('open')) {
+      measureBase();
+      schedule();
+    }
+  }).observe(lbEls.stage);
+
+  const mainImg = pdpRoot.querySelector('#pdp-mainProductImage');
+  if (mainImg) {
+    mainImg.addEventListener('click', () => openLB(mainImg.src));
+  }
+
+  const syncLB = (src) => {
+    lbEls.img.src = src;
+  };
+
+  const attachThumbSync = () => {
+    const thumbsDiv = pdpRoot.querySelector('#pdp-productThumbnails');
+    if (!thumbsDiv) return;
+    thumbsDiv.querySelectorAll('.thumbnail').forEach((imgEl) => {
+      imgEl.addEventListener('click', () => syncLB(imgEl.src), { once: false });
+    });
+  };
+
+  const origRenderThumbs = renderThumbnails;
+  renderThumbnails = function(images) {
+    origRenderThumbs(images);
+    if (images && images[0]) syncLB(images[0]);
+    attachThumbSync();
+  };
+
+  (() => {
+    const first = pdpRoot.querySelector('#pdp-mainProductImage')?.src;
+    if (first) syncLB(first);
+    attachThumbSync();
+  })();
 </script>
