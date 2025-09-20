@@ -28,6 +28,80 @@
       <p class="product-label">NEW ARRIVAL</p>
       <h1 class="product-title">CloudNine Hanging Rest Spot</h1>
       <p class="product-price">$19.99</p>
+      <!-- ===== Selling Points (PLACE THIS UNDER .product-price, scoped) ===== -->
+      <div class="pdp-scope">
+        <div class="selling-points pdp-divider-block">
+          <ul class="sp-list">
+            <li>
+              <span class="sp-icon dot" aria-hidden="true"></span>
+              <span>Ready to ship</span>
+            </li>
+
+            <li>
+              <span class="sp-icon" aria-hidden="true">
+                <!-- Truck -->
+                <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M5.83268 15.8333C6.27471 15.8333 6.69863 15.6577 7.01119 15.3452C7.32375 15.0326 7.49935 14.6087 7.49935 14.1667C7.49935 13.7246 7.32375 13.3007 7.01119 12.9882C6.69863 12.6756 6.27471 12.5 5.83268 12.5C5.39065 12.5 4.96673 12.6756 4.65417 12.9882C4.34161 13.3007 4.16602 13.7246 4.16602 14.1667C4.16602 14.6087 4.34161 15.0326 4.65417 15.3452C4.96673 15.6577 5.39065 15.8333 5.83268 15.8333ZM14.166 15.8333C14.608 15.8333 15.032 15.6577 15.3445 15.3452C15.6571 15.0326 15.8327 14.6087 15.8327 14.1667C15.8327 13.7246 15.6571 13.3007 15.3445 12.9882C15.032 12.6756 14.608 12.5 14.166 12.5C13.724 12.5 13.3001 12.6756 12.9875 12.9882C12.6749 13.3007 12.4993 13.7246 12.4993 14.1667C12.4993 14.6087 12.6749 15.0326 12.9875 15.3452C13.3001 15.6577 13.724 15.8333 14.166 15.8333Z" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M11.666 14.1667V5.5C11.666 5.36739 11.6133 5.24021 11.5196 5.14645C11.4258 5.05268 11.2986 5 11.166 5H2.16602C2.03341 5 1.90623 5.05268 1.81246 5.14645C1.71869 5.24021 1.66602 5.36739 1.66602 5.5V13.6667C1.66602 13.7323 1.67895 13.7973 1.70408 13.858C1.7292 13.9187 1.76603 13.9738 1.81246 14.0202C1.85889 14.0666 1.91401 14.1035 1.97467 14.1286C2.03534 14.1537 2.10035 14.1667 2.16602 14.1667H3.87435M11.666 14.1667H7.54102M11.666 14.1667H12.4993M11.666 7.5H16.341C16.4377 7.50002 16.5322 7.52806 16.6133 7.58071C16.6943 7.63336 16.7584 7.70837 16.7977 7.79667L18.2893 11.1533C18.3178 11.2171 18.3325 11.286 18.3327 11.3558V13.6667C18.3327 13.7323 18.3197 13.7973 18.2946 13.858C18.2695 13.9187 18.2327 13.9738 18.1862 14.0202C18.1398 14.0666 18.0847 14.1035 18.024 14.1286C17.9634 14.1537 17.8983 14.1667 17.8327 14.1667H16.2493" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                </svg>
+              </span>
+              <span>Worldwide shipping available</span>
+            </li>
+
+            <li>
+              <span class="sp-icon" aria-hidden="true">
+                <!-- Tag -->
+                <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M7.864 18.4498L1.50004 12.0859C1.40627 11.9921 1.35359 11.8649 1.35359 11.7323C1.35359 11.5997 1.40627 11.4725 1.50004 11.3787L9.20691 3.67187C9.32476 3.55402 9.49447 3.50217 9.65887 3.53458L14.9622 4.59524C15.059 4.61457 15.148 4.66216 15.2178 4.73201C15.2877 4.80185 15.3353 4.89082 15.3546 4.98768L16.4153 10.291C16.4314 10.3718 16.4273 10.4553 16.4034 10.5342C16.3794 10.613 16.3363 10.6848 16.278 10.7429L8.5711 18.4498C8.52468 18.4962 8.46956 18.5331 8.40889 18.5582C8.34823 18.5833 8.28321 18.5963 8.21755 18.5963C8.15189 18.5963 8.08687 18.5833 8.02621 18.5582C7.96555 18.5331 7.91043 18.4962 7.864 18.4498Z" stroke="currentColor" stroke-width="1.5"></path>
+                  <circle cx="12.084" cy="7.91663" r="1.125" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
+                </svg>
+              </span>
+              <span>Buy 5 and get 2 free!</span>
+            </li>
+          </ul>
+        </div>
+
+        <style>
+          /* Scoped to PDP only */
+          .pdp-scope .pdp-divider-block{
+            border-top:1px solid #e3e3e3;
+            border-bottom:1px solid #e3e3e3;
+            padding:.6rem 0;            /* mirrors accordion header vertical */
+            margin:.75rem 0 1rem;       /* under price, above rating/next block */
+          }
+
+          .pdp-scope .sp-list{list-style:none;margin:0;padding:0;font-weight:400;letter-spacing:.01em}
+          .pdp-scope .sp-list li{
+            display:grid;
+            grid-template-columns:16px 1fr; /* icon + text */
+            align-items:center;
+            column-gap:12px;
+            color:#444;                   /* match accordion content */
+            font-size:.85rem;             /* match accordion scale */
+            line-height:1.6;              /* fluid line-height */
+            margin:6px 0;                 /* compact rhythm */
+          }
+          .pdp-scope .sp-icon{width:16px;height:16px;display:inline-grid;place-items:center;color:inherit}
+          .pdp-scope .sp-icon svg{width:16px;height:16px;display:block}
+
+          /* Green status dot with subtle pulse */
+          .pdp-scope .sp-icon.dot{
+            position:relative;width:14px;height:14px;border-radius:50%;background:#79C48B
+          }
+          .pdp-scope .sp-icon.dot::after{
+            content:"";position:absolute;inset:0;border-radius:50%;
+            background:#79C48B;opacity:.35;animation:pulse 2.4s ease-out infinite
+          }
+          @media (prefers-reduced-motion:reduce){
+            .pdp-scope .sp-icon.dot::after{animation:none;opacity:.25}
+          }
+          @keyframes pulse{
+            0%{transform:scale(1);opacity:.35}
+            70%{transform:scale(2.2);opacity:0}
+            100%{transform:scale(1);opacity:0}
+          }
+        </style>
+      </div>
       <div class="product-rating">★★★★★ <span>(4.7)</span></div>
       <p class="product-shade" style="display:none;">Shade: <span id="selectedShade"></span></p>
 
