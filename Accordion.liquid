@@ -27,11 +27,18 @@
       width: 100%;
       display: flex; align-items: center; justify-content: space-between;
       padding: 14px 0; background: transparent; border: 0; cursor: pointer; text-align: left;
-      text-transform: uppercase; letter-spacing: 1px; font-size: 12px;
     }
     .accordion-header:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
 
     .accordion-icon { font-size: 16px; line-height: 1; transition: transform var(--transition); }
+
+    .pdp-scope .accordion-header {
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0.02em;
+    }
 
     .accordion-body {
       overflow: hidden; max-height: 0; transition: max-height 0.4s ease; will-change: max-height;
@@ -44,7 +51,7 @@
 </head>
 <body>
 
-  <section class="accordion-section" aria-label="Product details">
+  <section class="accordion-section pdp-scope" aria-label="Product details">
     <!-- 1. Shipping -->
     <div class="accordion">
       <button class="accordion-header" type="button"
